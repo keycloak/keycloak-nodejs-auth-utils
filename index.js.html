@@ -14,12 +14,12 @@
         margin-left:0px;
         font-weight:normal;
       }
-
+      
       .bs-docs-sidenav.affix {
         box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
         z-index: 10;
       }
-
+      
       .bs-docs-sidenav i{
         width: 8px;
         height: 8px;
@@ -28,16 +28,16 @@
         display: inline-block;
         margin-right:0.5em;
       }
-
+      
       .bs-docs-sidenav > li > a {
           word-wrap: break-word;
       }
-
+      
       .bs-docs-sidenav > li:first-child > a {
         border-top-right-radius: 6px;
         border-top-left-radius: 6px;
       }
-
+      
       code[class*="language-"],pre[class*="language-"]{color:black;text-shadow:0 1px white;font-family:Consolas,Monaco,'Andale Mono',monospace;direction:ltr;text-align:left;white-space:pre;word-spacing:normal;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*="language-"]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*="language-"],pre[class*="language-"]{background:#f5f2f0}:not(pre)>code[class*="language-"]{padding:.1em;border-radius:.3em}.token.comment,.token.prolog,.token.doctype,.token.cdata{color:slategray}.token.punctuation{color:#999}.namespace{opacity:.7}.token.property,.token.tag,.token.boolean,.token.number{color:#905}.token.selector,.token.attr-name,.token.string{color:#690}.token.operator,.token.entity,.token.url,.language-css .token.string,.style .token.string{color:#a67f59;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.regex,.token.important{color:#e90}.token.important{font-weight:bold}.token.entity{cursor:help}
       div.description {margin: 14px 0; padding-top: 14px; border-bottom:1px solid #eee; }
       .tags {}
@@ -46,9 +46,9 @@
         margin-right:0.5em;
         //- float:right; margin-top:8px
       }
-
+      
       footer iframe{vertical-align:middle;}
-
+      
     </style>
   </head>
   <body data-spy="scroll" data-target=".scrollspy">
@@ -71,29 +71,34 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="index.html">Main</a></li>
+            <li><a href="index.html">Main</a></li>
             <li><a href="config.js.html">config.js</a></li>
             <li><a href="grant-manager.js.html">grant-manager.js</a></li>
             <li><a href="grant.js.html">grant.js</a></li>
-            <li><a href="index.js.html">index.js</a></li>
+            <li class="active"><a href="index.js.html">index.js</a></li>
             <li><a href="token.js.html">token.js</a></li>
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#exports"><i class="alert alert-success"></i><span>exports</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1><code>keycloak-auth-utils</code></h1>
-<p>Provides grant-management utilities.</p><h2><code>GrantManager</code></h2>
-<ul>
-<li>Can obtain a grant through the direct API using name/password.</li>
-<li>Can renew any token using a <code>refresh_token</code>.</li>
-<li>Validates grants/tokens.</li>
-</ul>
-<h2><code>Grant</code></h2>
-<p>Embodies <code>access_token</code>, <code>refresh_token</code> and other handiness.</p><h2><code>Token</code></h2>
-<p>Embodies JSON Web Token bits and checking for roles.</p></section>
+          <section id="exports">
+            <h1>exports</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>module.exports</span>
+            </p>
+          </section>
+          <div class="description"><p>Export all useful things.</p> </div>
+          <pre><code class="language-javascript">module.exports = {
+  Config:       require('./config'),
+  GrantManager: require('./grant-manager'),
+  Grant:        require('./grant' ),
+};</code></pre>
         </div>
       </div>
     </div>
@@ -122,7 +127,7 @@
       Prism.languages.css={comment:/\/\*[\w\W]*?\*\//g,atrule:/@[\w-]+?(\s+[^;{]+)?(?=\s*{|\s*;)/gi,url:/url\((["']?).*?\1\)/gi,selector:/[^\{\}\s][^\{\}]*(?=\s*\{)/g,property:/(\b|\B)[a-z-]+(?=\s*:)/ig,string:/("|')(\\?.)*?\1/g,important:/\B!important\b/gi,ignore:/&(lt|gt|amp);/gi,punctuation:/[\{\};:]/g};Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{style:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/style(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)|(&lt;|<)\/style(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.css}}});;
       Prism.languages.clike={comment:{pattern:/(^|[^\\])(\/\*[\w\W]*?\*\/|\/\/.*?(\r?\n|$))/g,lookbehind:!0},string:/("|')(\\?.)*?\1/g,keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|catch|finally|null|break|continue)\b/g,"boolean":/\b(true|false)\b/g,number:/\b-?(0x)?\d*\.?[\da-f]+\b/g,operator:/[-+]{1,2}|!|=?&lt;|=?&gt;|={1,2}|(&amp;){1,2}|\|?\||\?|\*|\//g,ignore:/&(lt|gt|amp);/gi,punctuation:/[{}[\];(),.:]/g};;
       Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(var|let|if|else|while|do|for|return|in|instanceof|function|new|with|typeof|try|catch|finally|null|break|continue)\b/g,number:/\b(-?(0x)?\d*\.?[\da-f]+|NaN|-?Infinity)\b/g});Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\r\n])+\/[gim]{0,3}(?=\s*($|[\r\n,.;})]))/g,lookbehind:!0}});Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/script(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)|(&lt;|<)\/script(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.javascript}}});;
-
+      
     </script>
     <!-- App js-->
     <script>

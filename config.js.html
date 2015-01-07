@@ -14,12 +14,12 @@
         margin-left:0px;
         font-weight:normal;
       }
-
+      
       .bs-docs-sidenav.affix {
         box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
         z-index: 10;
       }
-
+      
       .bs-docs-sidenav i{
         width: 8px;
         height: 8px;
@@ -28,16 +28,16 @@
         display: inline-block;
         margin-right:0.5em;
       }
-
+      
       .bs-docs-sidenav > li > a {
           word-wrap: break-word;
       }
-
+      
       .bs-docs-sidenav > li:first-child > a {
         border-top-right-radius: 6px;
         border-top-left-radius: 6px;
       }
-
+      
       code[class*="language-"],pre[class*="language-"]{color:black;text-shadow:0 1px white;font-family:Consolas,Monaco,'Andale Mono',monospace;direction:ltr;text-align:left;white-space:pre;word-spacing:normal;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*="language-"]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*="language-"],pre[class*="language-"]{background:#f5f2f0}:not(pre)>code[class*="language-"]{padding:.1em;border-radius:.3em}.token.comment,.token.prolog,.token.doctype,.token.cdata{color:slategray}.token.punctuation{color:#999}.namespace{opacity:.7}.token.property,.token.tag,.token.boolean,.token.number{color:#905}.token.selector,.token.attr-name,.token.string{color:#690}.token.operator,.token.entity,.token.url,.language-css .token.string,.style .token.string{color:#a67f59;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.regex,.token.important{color:#e90}.token.important{font-weight:bold}.token.entity{cursor:help}
       div.description {margin: 14px 0; padding-top: 14px; border-bottom:1px solid #eee; }
       .tags {}
@@ -46,9 +46,9 @@
         margin-right:0.5em;
         //- float:right; margin-top:8px
       }
-
+      
       footer iframe{vertical-align:middle;}
-
+      
     </style>
   </head>
   <body data-spy="scroll" data-target=".scrollspy">
@@ -71,8 +71,8 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="index.html">Main</a></li>
-            <li><a href="config.js.html">config.js</a></li>
+            <li><a href="index.html">Main</a></li>
+            <li class="active"><a href="config.js.html">config.js</a></li>
             <li><a href="grant-manager.js.html">grant-manager.js</a></li>
             <li><a href="grant.js.html">grant.js</a></li>
             <li><a href="index.js.html">index.js</a></li>
@@ -80,20 +80,205 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#Config"><i class="alert alert-success"></i><span>Config</span></a>
+              </li>
+              <li><a href="#loadConfiguration"><i class="alert alert-info"></i><span>loadConfiguration</span></a>
+              </li>
+              <li><a href="#configure"><i class="alert alert-info"></i><span>configure</span></a>
+              </li>
+              <li><a href="#realm"><i class="alert alert-success"></i><span>realm</span></a>
+              </li>
+              <li><a href="#clientId"><i class="alert alert-success"></i><span>clientId</span></a>
+              </li>
+              <li><a href="#secret"><i class="alert alert-success"></i><span>secret</span></a>
+              </li>
+              <li><a href="#public"><i class="alert alert-success"></i><span>public</span></a>
+              </li>
+              <li><a href="#authServerUrl"><i class="alert alert-success"></i><span>authServerUrl</span></a>
+              </li>
+              <li><a href="#realmUrl"><i class="alert alert-success"></i><span>realmUrl</span></a>
+              </li>
+              <li><a href="#realmAdminUrl"><i class="alert alert-success"></i><span>realmAdminUrl</span></a>
+              </li>
+              <li><a href="#publicKey"><i class="alert alert-success"></i><span>publicKey</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1><code>keycloak-auth-utils</code></h1>
-<p>Provides grant-management utilities.</p><h2><code>GrantManager</code></h2>
-<ul>
-<li>Can obtain a grant through the direct API using name/password.</li>
-<li>Can renew any token using a <code>refresh_token</code>.</li>
-<li>Validates grants/tokens.</li>
-</ul>
-<h2><code>Grant</code></h2>
-<p>Embodies <code>access_token</code>, <code>refresh_token</code> and other handiness.</p><h2><code>Token</code></h2>
-<p>Embodies JSON Web Token bits and checking for roles.</p></section>
+          <section id="Config">
+            <h1>Config</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">constructor</div><span>Config()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>config</td>
+                <td>String,Object</td>
+                <td>Configuration path or details. </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Construct a configuration object.</p><p>A configuration object may be constructed with either<br />a path to a <code>keycloak.json</code> file (which defaults to<br /><code>$PWD/keycloak.json</code> if not present, or with a configuration<br />object akin to what parsing <code>keycloak.json</code> provides.</p> </div>
+          <pre><code class="language-javascript">function Config(config) {
+  if ( ! config ) {
+    config = path.join( process.cwd(), 'keycloak.json' );
+  }
+
+  if ( typeof config == 'string' ) {
+    this.loadConfiguration( config );
+  } else {
+    this.configure( config );
+  }
+}</code></pre>
+          <section id="loadConfiguration">
+            <h1>loadConfiguration</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Config.prototype.loadConfiguration()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>configPath</td>
+                <td>String</td>
+                <td>Path to a `keycloak.json` configuration.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Load configuration from a path.</p> </div>
+          <pre><code class="language-javascript">Config.prototype.loadConfiguration = function(configPath) {
+  var json = fs.readFileSync( configPath );
+  var config = JSON.parse( json.toString() );
+  this.configure( config );
+};</code></pre>
+          <section id="configure">
+            <h1>configure</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Config.prototype.configure()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>config</td>
+                <td>Object</td>
+                <td>The configuration to instill.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Configure this <code>Config</code> object.</p><p>This will set the internal configuration details.  The details<br />may come from a <code>keycloak.json</code> formatted object (with names such<br />as <code>auth-server-url</code>) or from an existing <code>Config</code> object (using<br />names such as <code>authServerUrl</code>).</p> </div>
+          <pre><code class="language-javascript">Config.prototype.configure = function(config) {</code></pre>
+          <section id="realm">
+            <h1>realm</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.realm</span>
+            </p>
+          </section>
+          <div class="description"><p>Realm ID</p> </div>
+          <pre><code class="language-javascript">this.realm          = config['realm']                      || config.realm;</code></pre>
+          <section id="clientId">
+            <h1>clientId</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.clientId</span>
+            </p>
+          </section>
+          <div class="description"><p>Client/Application ID</p> </div>
+          <pre><code class="language-javascript">this.clientId       = config['resource']                   || config.clientId;</code></pre>
+          <section id="secret">
+            <h1>secret</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.secret</span>
+            </p>
+          </section>
+          <div class="description"><p>Client/Application secret</p> </div>
+          <pre><code class="language-javascript">this.secret         = (config['credentials'] || {}).secret || config.secret;</code></pre>
+          <section id="public">
+            <h1>public</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.public</span>
+            </p>
+          </section>
+          <div class="description"><p>If this is a public application or confidential.</p> </div>
+          <pre><code class="language-javascript">this.public         = config['public-client'] || config.public || false;</code></pre>
+          <section id="authServerUrl">
+            <h1>authServerUrl</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.authServerUrl</span>
+            </p>
+          </section>
+          <div class="description"><p>Authentication server URL</p> </div>
+          <pre><code class="language-javascript">this.authServerUrl  = config['auth-server-url']            || config.authServerUrl;</code></pre>
+          <section id="realmUrl">
+            <h1>realmUrl</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.realmUrl</span>
+            </p>
+          </section>
+          <div class="description"><p>Root realm URL.</p> </div>
+          <pre><code class="language-javascript">this.realmUrl      = this.authServerUrl + '/realms/' + this.realm;</code></pre>
+          <section id="realmAdminUrl">
+            <h1>realmAdminUrl</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.realmAdminUrl</span>
+            </p>
+          </section>
+          <div class="description"><p>Root realm admin URL.</p> </div>
+          <pre><code class="language-javascript">this.realmAdminUrl = this.authServerUrl + '/admin/realms/' + this.realm;
+
+var plainKey = config['realm-public-key'];</code></pre>
+          <section id="publicKey">
+            <h1>publicKey</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>this.publicKey</span>
+            </p>
+          </section>
+          <div class="description"><p>Formatted public-key.</p> </div>
+          <pre><code class="language-javascript">this.publicKey = &quot;-----BEGIN PUBLIC KEY-----\n&quot;;
+
+for ( i = 0 ; i &lt; plainKey.length ; i = i + 64 ) {
+  this.publicKey += plainKey.substring( i, i + 64 );
+  this.publicKey += &quot;\n&quot;;
+}
+
+this.publicKey += &quot;-----END PUBLIC KEY-----\n&quot;;
+};
+
+module.exports = Config;</code></pre>
         </div>
       </div>
     </div>
@@ -122,7 +307,7 @@
       Prism.languages.css={comment:/\/\*[\w\W]*?\*\//g,atrule:/@[\w-]+?(\s+[^;{]+)?(?=\s*{|\s*;)/gi,url:/url\((["']?).*?\1\)/gi,selector:/[^\{\}\s][^\{\}]*(?=\s*\{)/g,property:/(\b|\B)[a-z-]+(?=\s*:)/ig,string:/("|')(\\?.)*?\1/g,important:/\B!important\b/gi,ignore:/&(lt|gt|amp);/gi,punctuation:/[\{\};:]/g};Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{style:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/style(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)|(&lt;|<)\/style(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.css}}});;
       Prism.languages.clike={comment:{pattern:/(^|[^\\])(\/\*[\w\W]*?\*\/|\/\/.*?(\r?\n|$))/g,lookbehind:!0},string:/("|')(\\?.)*?\1/g,keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|catch|finally|null|break|continue)\b/g,"boolean":/\b(true|false)\b/g,number:/\b-?(0x)?\d*\.?[\da-f]+\b/g,operator:/[-+]{1,2}|!|=?&lt;|=?&gt;|={1,2}|(&amp;){1,2}|\|?\||\?|\*|\//g,ignore:/&(lt|gt|amp);/gi,punctuation:/[{}[\];(),.:]/g};;
       Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(var|let|if|else|while|do|for|return|in|instanceof|function|new|with|typeof|try|catch|finally|null|break|continue)\b/g,number:/\b(-?(0x)?\d*\.?[\da-f]+|NaN|-?Infinity)\b/g});Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\r\n])+\/[gim]{0,3}(?=\s*($|[\r\n,.;})]))/g,lookbehind:!0}});Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/script(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)|(&lt;|<)\/script(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.javascript}}});;
-
+      
     </script>
     <!-- App js-->
     <script>
