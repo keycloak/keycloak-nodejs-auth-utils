@@ -1,13 +1,18 @@
 {
   "name": "keycloak-auth-utils",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "General Keycloak Utilities",
+  "homepage": "http://keycloak.org",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/jasmine/bin/jasmine.js",
+    "prepublish": "./node_modules/nsp/bin/nsp check",
     "build": "node_modules/grunt-cli/bin/grunt"
   },
-  "author": "",
+  "author": {
+    "name": "Red Hat, Inc.",
+    "url": "http://keycloak.org"
+  },
   "license": "Apache-2.0",
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -18,7 +23,8 @@
     "grunt-doxx": "^0.1.2",
     "grunt-gh-pages": "^0.9.1",
     "grunt-touch": "^0.1.0",
-    "jasmine": "^2.1.1"
+    "jasmine": "^2.1.1",
+    "nsp": "*"
   },
   "dependencies": {
     "q": "^1.1.2"
