@@ -7,14 +7,24 @@ describe( "grant manager", function() {
   var manager;
 
   beforeEach( function() {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Ignore invalid self signed certificates
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     var config = new Config('spec/keycloak.json');
     manager = new GrantManager(config);
+    var configHttps = new Config('spec/keycloak-https.json');
+    managerHttps = new GrantManager(configHttps);
   })
 
   it( 'should be able to obtain a grant', function(done) {
-
     manager.obtainDirectly( 'lucy', 'lucy' )
+      .then( function(grant) {
+        expect( grant.access_token ).not.toBe( undefined );
+      })
+      .done(done);
+  });
+
+  it( 'should be able to obtain a grant using https', function(done) {
+    managerHttps.obtainDirectly( 'lucy', 'lucy' )
       .then( function(grant) {
         expect( grant.access_token ).not.toBe( undefined );
       })
