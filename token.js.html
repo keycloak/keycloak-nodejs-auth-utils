@@ -14,12 +14,12 @@
         margin-left:0px;
         font-weight:normal;
       }
-
+      
       .bs-docs-sidenav.affix {
         box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
         z-index: 10;
       }
-
+      
       .bs-docs-sidenav i{
         width: 8px;
         height: 8px;
@@ -28,16 +28,16 @@
         display: inline-block;
         margin-right:0.5em;
       }
-
+      
       .bs-docs-sidenav > li > a {
           word-wrap: break-word;
       }
-
+      
       .bs-docs-sidenav > li:first-child > a {
         border-top-right-radius: 6px;
         border-top-left-radius: 6px;
       }
-
+      
       code[class*="language-"],pre[class*="language-"]{color:black;text-shadow:0 1px white;font-family:Consolas,Monaco,'Andale Mono',monospace;direction:ltr;text-align:left;white-space:pre;word-spacing:normal;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*="language-"]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*="language-"],pre[class*="language-"]{background:#f5f2f0}:not(pre)>code[class*="language-"]{padding:.1em;border-radius:.3em}.token.comment,.token.prolog,.token.doctype,.token.cdata{color:slategray}.token.punctuation{color:#999}.namespace{opacity:.7}.token.property,.token.tag,.token.boolean,.token.number{color:#905}.token.selector,.token.attr-name,.token.string{color:#690}.token.operator,.token.entity,.token.url,.language-css .token.string,.style .token.string{color:#a67f59;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.regex,.token.important{color:#e90}.token.important{font-weight:bold}.token.entity{cursor:help}
       div.description {margin: 14px 0; padding-top: 14px; border-bottom:1px solid #eee; }
       .tags {}
@@ -46,9 +46,9 @@
         margin-right:0.5em;
         //- float:right; margin-top:8px
       }
-
+      
       footer iframe{vertical-align:middle;}
-
+      
     </style>
   </head>
   <body data-spy="scroll" data-target=".scrollspy">
@@ -71,34 +71,208 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="index.html">Main</a></li>
+            <li><a href="index.html">Main</a></li>
             <li><a href="config.js.html">config.js</a></li>
             <li><a href="grant-manager.js.html">grant-manager.js</a></li>
             <li><a href="grant.js.html">grant.js</a></li>
             <li><a href="index.js.html">index.js</a></li>
-            <li><a href="token.js.html">token.js</a></li>
+            <li class="active"><a href="token.js.html">token.js</a></li>
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#Token"><i class="alert alert-success"></i><span>Token</span></a>
+              </li>
+              <li><a href="#isExpired"><i class="alert alert-info"></i><span>isExpired</span></a>
+              </li>
+              <li><a href="#hasRole"><i class="alert alert-info"></i><span>hasRole</span></a>
+              </li>
+              <li><a href="#hasApplicationRole"><i class="alert alert-info"></i><span>hasApplicationRole</span></a>
+              </li>
+              <li><a href="#hasRealmRole"><i class="alert alert-info"></i><span>hasRealmRole</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1><code>keycloak-auth-utils</code></h1>
-<p>Provides grant-management utilities.</p><h2><code>GrantManager</code></h2>
-<ul>
-<li>Can obtain a grant through the direct API using name/password.</li>
-<li>Can renew any token using a <code>refresh_token</code>.</li>
-<li>Validates grants/tokens.</li>
+          <section id="Token">
+            <h1>Token</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">constructor</div><span>Token()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>token</td>
+                <td>String</td>
+                <td>The JSON Web Token formatted token string.</td>
+              </tr>
+              <tr>
+                <td>clientId</td>
+                <td>String</td>
+                <td>Optional clientId if this is an `access_token`.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Construct a token.</p><p>Based on a JSON Web Token string, construct a token object. Optionally<br />if a <code>clientId</code> is provided, the token may be tested for roles with<br /><code>hasRole()</code>.</p> </div>
+          <pre><code class="language-javascript">function Token(token, clientId) {
+
+  this.token = token;
+  this.clientId = clientId;
+
+  if ( token ) {
+    try {
+      var parts = token.split('.');
+      this.header = JSON.parse( new Buffer( parts[0], 'base64' ).toString() );
+      this.content = JSON.parse( new Buffer( parts[1], 'base64' ).toString() );
+      this.signature = new Buffer( parts[2], 'base64' );
+      this.signed = parts[0] + '.' + parts[1];
+    } catch (err) {
+      this.content = {
+        expiresAt: 0
+      };
+    }
+  }
+}</code></pre>
+          <section id="isExpired">
+            <h1>isExpired</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Token.prototype.isExpired()</span> -><span>boolean</span>
+            </p>
+          </section>
+          <div class="description"><p>Determine if this token is expired.</p> </div>
+          <pre><code class="language-javascript">Token.prototype.isExpired = function() {
+  if ( ( this.content.exp * 1000 ) &lt; Date.now() ) {
+    return true;
+  }
+};</code></pre>
+          <section id="hasRole">
+            <h1>hasRole</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Token.prototype.hasRole()</span> -><span>boolean</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>name</td>
+                <td>String</td>
+                <td>The role name specifier. </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Determine if this token has an associated role.</p><p>This method is only functional if the token is constructed<br />with a <code>clientId</code> parameter.</p><p>The parameter matches a role specification using the following rules:</p><ul>
+<li>If the name contains no colons, then the name is taken as the entire<br />name of a role within the current application, as specified via<br /><code>clientId</code>.</li>
+<li>If the name starts with the literal <code>realm:</code>, the subsequent portion<br />is taken as the name of a <em>realm-level</em> role.</li>
+<li>Otherwise, the name is split at the colon, with the first portion being<br />taken as the name of an arbitrary application, and the subsequent portion<br />as the name of a role with that app.</li>
 </ul>
-<h2><code>Grant</code></h2>
-<p>Embodies <code>access_token</code>, <code>refresh_token</code> and other handiness.</p><h2><code>Token</code></h2>
-<p>Embodies JSON Web Token bits and checking for roles.</p><h1>Resources</h1>
-<ul>
-<li><a href="http://github.com/bobmcwhirter/keycloak-auth-utils">GitHub</a></li>
-<li><a href="http://bobmcwhirter.github.io/keycloak-auth-utils">Documentation</a></li>
-</ul>
-</section>
+ </div>
+          <pre><code class="language-javascript">Token.prototype.hasRole = function(name) {
+  if ( ! this.clientId ) {
+    return false;
+  }
+
+  var parts = name.split(':');
+
+  if ( parts.length == 1 ) {
+    return this.hasApplicationRole( this.clientId, parts[0] );
+  }
+
+  if ( parts[0] == 'realm' ) {
+    return this.hasRealmRole( parts[1] );
+  }
+
+  return this.hasApplicationRole( parts[0], parts[1] );
+};</code></pre>
+          <section id="hasApplicationRole">
+            <h1>hasApplicationRole</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Token.prototype.hasApplicationRole()</span> -><span>boolean</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>appName</td>
+                <td>String</td>
+                <td>The identifier of the application to test.</td>
+              </tr>
+              <tr>
+                <td>roleName</td>
+                <td>String</td>
+                <td>The name of the role within that application to test. </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Determine if this token has an associated specific application role.</p><p>Even if <code>clientId</code> is not set, this method may be used to explicitly test<br />roles for any given application.</p> </div>
+          <pre><code class="language-javascript">Token.prototype.hasApplicationRole = function(appName, roleName) {
+  var appRoles = this.content.resource_access[appName];
+
+  if ( ! appRoles ) {
+    return false;
+  }
+
+  return ( appRoles.roles.indexOf( roleName ) &gt;= 0 );
+};</code></pre>
+          <section id="hasRealmRole">
+            <h1>hasRealmRole</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Token.prototype.hasRealmRole()</span> -><span>boolean</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>appName</td>
+                <td>String</td>
+                <td>The identifier of the application to test.</td>
+              </tr>
+              <tr>
+                <td>roleName</td>
+                <td>String</td>
+                <td>The name of the role within that application to test. </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Determine if this token has an associated specific realm-level role.</p><p>Even if <code>clientId</code> is not set, this method may be used to explicitly test<br />roles for the realm.</p> </div>
+          <pre><code class="language-javascript">Token.prototype.hasRealmRole = function(roleName) {
+  return ( this.content.realm_access.roles.indexOf( roleName ) &gt;= 0 );
+};
+
+module.exports = Token;</code></pre>
         </div>
       </div>
     </div>
@@ -127,7 +301,7 @@
       Prism.languages.css={comment:/\/\*[\w\W]*?\*\//g,atrule:/@[\w-]+?(\s+[^;{]+)?(?=\s*{|\s*;)/gi,url:/url\((["']?).*?\1\)/gi,selector:/[^\{\}\s][^\{\}]*(?=\s*\{)/g,property:/(\b|\B)[a-z-]+(?=\s*:)/ig,string:/("|')(\\?.)*?\1/g,important:/\B!important\b/gi,ignore:/&(lt|gt|amp);/gi,punctuation:/[\{\};:]/g};Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{style:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/style(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)|(&lt;|<)\/style(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.css}}});;
       Prism.languages.clike={comment:{pattern:/(^|[^\\])(\/\*[\w\W]*?\*\/|\/\/.*?(\r?\n|$))/g,lookbehind:!0},string:/("|')(\\?.)*?\1/g,keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|catch|finally|null|break|continue)\b/g,"boolean":/\b(true|false)\b/g,number:/\b-?(0x)?\d*\.?[\da-f]+\b/g,operator:/[-+]{1,2}|!|=?&lt;|=?&gt;|={1,2}|(&amp;){1,2}|\|?\||\?|\*|\//g,ignore:/&(lt|gt|amp);/gi,punctuation:/[{}[\];(),.:]/g};;
       Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(var|let|if|else|while|do|for|return|in|instanceof|function|new|with|typeof|try|catch|finally|null|break|continue)\b/g,number:/\b(-?(0x)?\d*\.?[\da-f]+|NaN|-?Infinity)\b/g});Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\r\n])+\/[gim]{0,3}(?=\s*($|[\r\n,.;})]))/g,lookbehind:!0}});Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/script(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)|(&lt;|<)\/script(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.javascript}}});;
-
+      
     </script>
     <!-- App js-->
     <script>
