@@ -20,6 +20,8 @@ function waitForServer {
     fi
     sleep 1
   done
+  # See if this helps travis-ci not fail the first test
+  sleep 5
 }
 
 ARCHIVE="${KEYCLOAK}.tar.gz"
