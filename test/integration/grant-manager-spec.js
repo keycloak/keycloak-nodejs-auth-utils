@@ -3,7 +3,7 @@
 const GrantManager = require('../../index').GrantManager;
 const Config = require('../../index').Config;
 const test = require('tape');
-
+const extend = require('util')._extend;
 const delay = (ms) => (value) => new Promise((resolve) => setTimeout(() => resolve(value), ms));
 const getManager = (fixture) => new GrantManager(new Config(fixture));
 
@@ -239,4 +239,115 @@ test('GrantManager in confidential mode should use callback if provided and vali
         t.end();
       });
     });
+});
+
+test('GrantManager should be able to remove expired access_token token and keep others', (t) => {
+  let originalGrant;
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      originalGrant = extend({}, grant);
+      grant.access_token.content.exp = 0;
+      return manager.validateGrant(grant);
+    })
+    .then((grant) => {
+      t.equal(grant.access_token, undefined);
+      t.equal(grant.refresh_token, originalGrant.refresh_token);
+      t.equal(grant.id_token, originalGrant.id_token);
+    })
+    .then(t.end);
+});
+
+test('GrantManager should return empty when trying to obtain from code with empty params', (t) => {
+  manager.obtainFromCode('', '', '', '', function () {})
+    .then((result) => {
+      t.equal(result, undefined);
+    })
+    .then(t.end);
+});
+
+test('GrantManager should raise an error when trying to obtain from code with rogue params', (t) => {
+  manager.obtainFromCode('', '', '', '', {})
+    .catch((e) => {
+      t.equal(e, '400:Bad Request');
+      t.end();
+    });
+});
+
+test('GrantManager should be able to validate invalid ISS', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      grant.access_token.content.iss = 'http://wrongiss.com';
+      return manager.validateGrant(grant);
+    })
+    .then((grant) => {
+      t.equal(grant.access_token, undefined);
+    })
+    .then(t.end);
+});
+
+test('GrantManager should be able to validate invalid iat', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      grant.access_token.content.iat = -5;
+      return manager.validateGrant(grant);
+    })
+    .then((grant) => {
+      t.equal(grant.access_token, undefined);
+    })
+    .then(t.end);
+});
+test('GrantManager should be ensure that a grant is fresh', (t) => {
+  let originalGrant;
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      originalGrant = extend({}, grant);
+      return manager.ensureFreshness(grant);
+    })
+    .then((result) => {
+      t.notEqual(result, originalGrant);
+    })
+    .then(t.end);
+});
+
+test('GrantManager should raise an error when access token and refresh token do not exist', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      grant['access_token'] = undefined;
+      grant['refresh_token'] = undefined;
+      return manager.ensureFreshness(grant);
+    })
+    .catch(e => {
+      t.equal(e.toString(), 'Error: Unable to refresh without a refresh token');
+    })
+    .then(t.end);
+});
+
+test('GrantManager should validate unsigned token', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      grant.access_token.signed = false;
+      return manager.validateToken(grant.access_token);
+    })
+    .then((result) => t.equal(result, undefined))
+    .then(t.end);
+});
+
+test('GrantManager should fail to load public key when kid is empty', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      grant.access_token.header.kid = {};
+      return manager.validateToken(grant.access_token);
+    })
+    .then((result) => t.equal(result, undefined))
+    .then(t.end);
+});
+
+test('GrantManager should fail with invalid signature', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      grant.access_token.signature = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
+      return manager.validateToken(grant.access_token);
+    })
+    .then((result) => t.equal(result, undefined))
+    .then(t.end);
 });
