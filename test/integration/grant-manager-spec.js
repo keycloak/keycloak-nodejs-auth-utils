@@ -227,3 +227,16 @@ test('GrantManager return user realm role based on realm name', (t) => {
     })
     .then(t.end);
 });
+
+test('GrantManager in confidential mode should use callback if provided and validate access token', (t) => {
+  manager.obtainDirectly('test-user', 'tiger')
+    .then((grant) => {
+      manager.validateAccessToken(grant.access_token, function (err, result) {
+        if (err) {
+          t.end(err);
+        }
+        t.equal(result, grant.access_token);
+        t.end();
+      });
+    });
+});
